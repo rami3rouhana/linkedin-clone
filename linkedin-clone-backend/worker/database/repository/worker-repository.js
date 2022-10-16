@@ -88,7 +88,7 @@ class WorkerRepository {
 
         if (followed) {
             followed.offers.filter(offer => offer.offerId == offerId)
-            
+
             const followedResult = await followed.save();
             return followedResult;
         }
