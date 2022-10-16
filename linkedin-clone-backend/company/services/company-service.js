@@ -1,5 +1,5 @@
 const { CompanyRepository } = require("../database");
-const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../untils');
+const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../utils');
 
 // All Business logic will be here
 class CompanyService {
