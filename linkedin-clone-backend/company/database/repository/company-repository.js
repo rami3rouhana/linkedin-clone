@@ -39,15 +39,10 @@ class ShoppingRepository {
         return offerResult;
     }
 
-    async AddApplicant(id, { _id, name, email, file, }) {
+    async AddApplicant(id, applicant) {
 
         const offer = await OfferModel.findOne({ _id: id })
-        const applicant = {
-            _id,
-            name,
-            email,
-            file,
-        }
+
         offer.applicants = { ...applicants, applicant }
 
         const offerResult = await offer.save();

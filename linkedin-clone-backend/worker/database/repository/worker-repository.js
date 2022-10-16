@@ -27,11 +27,11 @@ class WorkerRepository {
         return workerResult;
     }
 
-    async AddPositions(id, positions) {
+    async AddPositions(id, position) {
 
         const worker = await WorkerModel.findOne({ _id: id })
 
-        worker.positions = positions;
+        worker.positions = { ...positions, position };;
 
         const workerResult = await worker.save();
         return workerResult;
