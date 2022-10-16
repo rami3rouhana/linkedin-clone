@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const { APP_SECRET } = require("../config");
 
+
 //Utility functions
 (module.exports.GenerateSalt = async () => {
     return await bcrypt.genSalt();
