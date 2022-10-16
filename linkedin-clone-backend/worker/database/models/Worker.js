@@ -7,7 +7,7 @@ const WorkerSchema = new Schema({
     email: String,
     password: String,
     salt: String,
-    positions: String,
+    positions: [{ position: String }],
     file: String,
 }, {
     toJSON: {
