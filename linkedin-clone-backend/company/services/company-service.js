@@ -1,8 +1,8 @@
 const { CompanyRepository } = require("../database");
-const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../utils');
+const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../untils');
 
 // All Business logic will be here
-class CustomerService {
+class CompanyService {
 
     constructor() {
         this.repository = new CompanyRepository();
@@ -12,7 +12,7 @@ class CustomerService {
 
         const { email, password } = userInputs;
 
-        const existingCompany = await this.repository.FindCustomer({ email });
+        const existingCompany = await this.repository.FindCompany({ email });
 
         if (existingCompany) {
 
@@ -43,9 +43,7 @@ class CustomerService {
 
     }
 
-    async CreateNewOffer(_id, userInputs) {
-
-        const { position } = userInputs;
+    async CreateNewOffer(_id, position) {
 
         const addressResult = await this.repository.CreateOffer(_id, position);
 
@@ -59,58 +57,30 @@ class CustomerService {
         return FormateData(addressResult);
     }
 
-    async AddNewApplicant(_id, userInputs) {
+    async GetOffers(_id) {
 
-        const offerExist = await this.repository.FindCompany(_id);
+        const addressResult = await this.repository.GetUsersOffers(_id);
 
-        if (offerExist) {
+        return FormateData(addressResult);
+    }
 
-            const applicant = {
-                id: userInputs._id,
-                name: userInputs.name,
-                email: userInputs.email,
-                file: userInputs.file
-            }
+    async AddNewApplicant({ _id, applicant }) {
 
-            const addressResult = await this.repository.CreateOffer(_id, applicant);
-
-            return FormateData(addressResult);
+        const newApplicant = {
+            _id: applicant._id,
+            name: applicant.name,
+            email: applicant.email,
+            file: applicant.file
         }
-        return FormateData({ msg: 'Error' });
 
-    }
+        const applicantResult = await this.repository.AddApplicant({_id, newApplicant});
 
-    async GetShopingDetails(id) {
 
-        const existingCompany = await this.repository.FindCustomerById({ id });
+        return FormateData(applicantResult);
 
-        if (existingCompany) {
-            // const orders = await this.shopingRepository.Orders(id);
-            return FormateData(existingCompany);
-        }
-        return FormateData({ msg: 'Error' });
-    }
 
-    async GetWishList(customerId) {
-        const wishListItems = await this.repository.Wishlist(customerId);
-        return FormateData(wishListItems);
-    }
-
-    async AddToWishlist(customerId, product) {
-        const wishlistResult = await this.repository.AddWishlistItem(customerId, product);
-        return FormateData(wishlistResult);
-    }
-
-    async ManageCart(customerId, product, qty, isRemove) {
-        const cartResult = await this.repository.AddCartItem(customerId, product, qty, isRemove);
-        return FormateData(cartResult);
-    }
-
-    async ManageOrder(customerId, order) {
-        const orderResult = await this.repository.AddOrderToProfile(customerId, order);
-        return FormateData(orderResult);
     }
 
 }
 
-module.exports = CustomerService;
+module.exports = CompanyService;
