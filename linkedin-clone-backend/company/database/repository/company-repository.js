@@ -45,6 +45,9 @@ class CompanyRepository {
 
         if (offer.deletedCount > 0)
             return offer;
+        else {
+            return { error: "Not Found" }
+        }
     }
 
     async GetUsersOffers(_id) {
