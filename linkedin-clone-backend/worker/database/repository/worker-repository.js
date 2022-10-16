@@ -17,6 +17,13 @@ class WorkerRepository {
         return workerResult;
     }
 
+    async FindWorker({ email }) {
+
+        const worker = await WorkerModel.findOne({ email: email })
+
+        return worker;
+    }
+
     async Addfile(id, path) {
 
         const worker = await WorkerModel.findOne({ _id: id })
@@ -27,54 +34,59 @@ class WorkerRepository {
         return workerResult;
     }
 
-    async AddPositions(id, position) {
+    async AddPositions(id, pos) {
 
         const worker = await WorkerModel.findOne({ _id: id })
 
-        worker.positions = { ...positions, position };;
+        worker.positions.push({ position: pos });
+
+        console.log(worker)
 
         const workerResult = await worker.save();
         return workerResult;
     }
 
-    async RemovePosition(id, position) {
+    async RemovePosition(id) {
 
-        const worker = await WorkerModel.findOne({ _id: id })
+        const worker = await WorkerModel.deleteOne(id);
 
-        worker.positions.filter(pos => pos === position);
-
-        const workerResult = await worker.save();
-        return workerResult;
+        if (worker.deletedCount > 0)
+            return worker;
     }
 
-    async CreateFollow(workerId, { companyId, name, offers }) {
+    async CreateFollow({ _id, follow }) {
 
         const followed = new FollowedModel({
-            workerId,
-            companyId,
-            company: name,
-            offers
+            workerId: _id,
+            companyId: follow.companyId,
+            company: follow.company,
+            email: follow.email,
+        })
+        follow.offers.map(offer => {
+            followed.offers.push({ offerId: offer.offerId, position: offer.position });
         })
 
         const followedResult = await followed.save();
         return followedResult;
     }
 
-    async RemoveFollow(workerId, companyId) {
+    async RemoveFollow(_id) {
 
-        const followed = await FollowedModel.findOne({ workerId, companyId })
-        followed.filter(follow => follow._id === followed._id)
+        const followed = await FollowedModel.deleteOne(_id);
 
-        const followedResult = await followed.save();
-        return followedResult;
+        if (followed.deletedCount > 0)
+            return followed;
+        else {
+            return { error: "Not Found" }
+        }
     }
 
-    async AddOffer(id, { offer }) {
+    async AddOffer(_id, offer) {
 
-        const followed = await FollowedModel.findOne({ _id: id })
+        const followed = await FollowedModel.findOne({ _id })
 
         if (followed) {
-            followed.offers = { ...offers, offer };
+            followed.offers.push(offer);
 
             const followedResult = await followed.save();
             return followedResult;
@@ -82,12 +94,12 @@ class WorkerRepository {
         return {}
     }
 
-    async RemoveOffer(id, offerId) {
+    async RemoveOffer(_id, offerId) {
 
-        const followed = await FollowedModel.findOne({ _id: id })
+        const followed = await FollowedModel.findOne({ _id })
 
         if (followed) {
-            followed.offers.filter(offer => offer.offerId == offerId)
+            followed.offers.pull({ _id: offerId });
 
             const followedResult = await followed.save();
             return followedResult;
