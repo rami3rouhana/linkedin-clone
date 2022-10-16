@@ -3,12 +3,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OfferSchema = new Schema({
-    _id: { type: String, require: true },
     companyId: { type: String, require: true },
     position: { type: String },
     applicants: [
         {
-            _id: { type: String, require: true },
+            _id: { type: String},
             name: { type: String },
             email: { type: String },
             file: { type: String },
