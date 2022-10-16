@@ -17,10 +17,15 @@ class ShoppingRepository {
         return companyResult;
     }
 
-    async CreateOffer(companyId, position) {
+    async FindCompany({ email }) {
+        const existingCompany = await CompanyModel.findOne({ email: email });
+        return existingCompany;
+    }
+
+    async CreateOffer(_id, position) {
 
         const offer = new OfferModel({
-            companyId,
+            companyId: _id,
             position,
             applicants: []
         })
@@ -29,19 +34,24 @@ class ShoppingRepository {
         return offerResult;
     }
 
-    async RemoveOffer(id) {
+    async FindOffer({ _id }) {
+        const existingoffer = await OfferModel.findOne({ _id });
+        return existingoffer;
+    }
 
-        const offer = await OfferModel.findOne({ _id: id })
+    async RemoveOffer(_id) {
 
-        offer.filter(off => off._id === id);
+        const offer = await OfferModel.findOne({ _id })
+
+        offer.filter(off => off._id === _id);
 
         const offerResult = await offer.save();
         return offerResult;
     }
 
-    async AddApplicant(id, applicant) {
+    async AddApplicant(_id, applicant) {
 
-        const offer = await OfferModel.findOne({ _id: id })
+        const offer = await OfferModel.findOne({ _id })
 
         offer.applicants = { ...applicants, applicant }
 
