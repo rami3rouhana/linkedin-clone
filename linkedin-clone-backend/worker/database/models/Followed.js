@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const FollowedSchema = new Schema({
-    workerId:{ type: String },
+    workerId: { type: String },
     companyId: { type: String },
     company: { type: String },
     email: { type: String },
@@ -11,7 +11,7 @@ const FollowedSchema = new Schema({
         {
             offerId: { type: String },
             position: { type: String },
-            viewed: { type: Boolean, default: true }
+            viewed: { type: Boolean, default: false }
         }
     ]
 }, {
