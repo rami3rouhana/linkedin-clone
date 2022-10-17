@@ -1,5 +1,5 @@
 const express = require('express');
-const cors  = require('cors');
+const cors = require('cors');
 const { worker } = require('./api');
 const { CreateChannel } = require("./utils");
 
@@ -11,6 +11,6 @@ module.exports = async (app) => {
 
     const channel = await CreateChannel();
 
-    worker(app,channel);
-    
+    worker(app, channel);
+
 }
