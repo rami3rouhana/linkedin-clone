@@ -39,12 +39,15 @@ class CompanyRepository {
         return existingoffer;
     }
 
-    async RemoveOffer(_id) {
+    async RemoveOffer(_id, companyId) {
 
-        const offer = await OfferModel.deleteOne(_id);
+        const offer = await OfferModel.deleteOne({ _id });
 
         if (offer.deletedCount > 0)
-            return offer;
+            return {
+                _id: companyId,
+                offerId: _id
+            };
         else {
             return { error: "Not Found" }
         }
@@ -57,17 +60,18 @@ class CompanyRepository {
         return offers;
     }
 
-    async AddApplicant({ _id, newApplicant }) {
+    async AddApplicant(_id, applied) {
 
         try {
-            const offer = await OfferModel.findOne({ _id });
 
-            offer.applicants.push(newApplicant);
+            const offer = await OfferModel.findOne({_id});
+
+            offer.applicants.push(applied);
 
             const offerResult = await offer.save();
             return offerResult;
         } catch (error) {
-            return FormateData({ msg: 'Error' });
+            return { msg: 'Error' };
         }
     }
 
