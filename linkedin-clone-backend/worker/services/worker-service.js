@@ -80,9 +80,9 @@ class WorkerService {
 
     }
 
-    async AddCompanyOffer(_id, offer) {
+    async AddCompanyOffer(offer, _id, offerId) {
 
-        const offerResult = await this.repository.AddOffer(_id, offer);
+        const offerResult = await this.repository.AddOffer(offer, _id, offerId);
 
         return FormateData(offerResult);
 
@@ -94,6 +94,52 @@ class WorkerService {
 
         return FormateData(offerResult);
 
+    }
+
+    async GetWorkerInfo(_id, offerId) {
+
+        const worker = await this.repository.GetWorker(_id, offerId);
+
+        return FormateData(worker);
+    }
+
+    async GetApplicantPayload(_id, applicant, event) {
+
+        if (applicant) {
+            const payload = {
+                event: event,
+                data: { _id, applicant }
+            };
+
+            return payload
+        } else {
+            return FormateData({ error: 'No Order Available' });
+        }
+    }
+
+    async SubscribeEvents(payload) {
+
+        console.log('Triggering.... Worker Events')
+
+        payload = JSON.parse(payload)
+
+        const { event, data } = payload;
+
+        const offerId = data.offer.offerId;
+        const _id = data.offer._id;
+        const offer = data.offer;
+
+
+        switch (event) {
+            case 'CREATE_OFFER':
+                this.AddCompanyOffer(offer, _id);
+                break;
+            case 'REMOVE_OFFER':
+                this.RemoveCompanyOffer(_id, offerId);
+                break;
+            default:
+                break;
+        }
     }
 
 }
