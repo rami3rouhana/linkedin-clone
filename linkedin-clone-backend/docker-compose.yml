@@ -1,0 +1,41 @@
+version: "4"
+services:
+  company:
+    build:
+      dockerfile: Dockerfile
+      context: ./company
+    container_name: company
+    ports:
+      - "8002:8002"
+    restart: always
+    volumes:
+      - .:/app
+      - /app/company/node_modules
+
+    env_file:
+      - ./company/dev.env
+      - ./company/.env
+  worker:
+    build:
+      dockerfile: Dockerfile
+      context: ./worker
+    container_name: worker
+    ports:
+      - "8001:8001"
+    restart: always
+
+    volumes:
+      - .:/app/
+      - /app/worker/node_modules
+    env_file:
+      - ./worker/dev.env
+      - ./worker/.env
+  nginx-proxy:
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    depends_on:
+      - worker
+      - company
+    ports:
+      - 80:80
