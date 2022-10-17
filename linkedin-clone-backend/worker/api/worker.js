@@ -1,8 +1,7 @@
 const WorkerService = require('../services/worker-service');
 const { COMPANY_SERVICE } = require("../config");
 const UserAuth = require('./middlewares/auth');
-const { SubscribeMessage } = require("../utils");
-const { PublishMessage } = require("../utils");
+const { SubscribeMessage, PublishMessage } = require("../utils");
 
 module.exports = (app, channel) => {
 

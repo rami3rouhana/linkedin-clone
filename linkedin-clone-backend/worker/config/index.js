@@ -13,6 +13,7 @@ module.exports = {
   APP_SECRET: process.env.APP_SECRET,
   EXCHANGE_NAME: process.env.EXCHANGE_NAME,
   MSG_QUEUE_URL: process.env.MSG_QUEUE_URL,
-  COMPANY_SERVICE: "company_service",
-  WORKER_SERVICE: "worker_service",
+  COMPANY_SERVICE: "COMPANY_SERVICE",
+  WORKER_SERVICE: "WORKER_SERVICE",
+  QUEUE_NAME:"WORKER_QUEUE"
 };
