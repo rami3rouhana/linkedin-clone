@@ -50,9 +50,9 @@ class CompanyService {
         return FormateData(addressResult);
     }
 
-    async RemoveOffer(_id) {
+    async RemoveOffer(_id, companyId) {
 
-        const addressResult = await this.repository.RemoveOffer(_id);
+        const addressResult = await this.repository.RemoveOffer(_id, companyId);
 
         return FormateData(addressResult);
     }
@@ -64,21 +64,54 @@ class CompanyService {
         return FormateData(addressResult);
     }
 
-    async AddNewApplicant({ _id, applicant }) {
+    async AddNewApplicant(_id, applied) {
 
-        const newApplicant = {
-            _id: applicant._id,
-            name: applicant.name,
-            email: applicant.email,
-            file: applicant.file
-        }
-
-        const applicantResult = await this.repository.AddApplicant({_id, newApplicant});
+        const applicantResult = await this.repository.AddApplicant( _id, applied );
 
 
         return FormateData(applicantResult);
 
 
+    }
+
+    async SubscribeEvents(payload) {
+
+        console.log('Triggering.... Worker Events')
+
+        payload = JSON.parse(payload);
+
+        const { event, data } = payload;
+
+        const _id = data.applicant.offerId
+
+        const applied = {
+            _id: data.applicant.worker._id,
+            name: data.applicant.worker.name,
+            email: data.applicant.worker.email,
+            file: data.applicant.worker.file
+        }
+
+        switch (event) {
+            case 'ADD_APPLICANT':
+                this.AddNewApplicant(_id, applied);
+                break;
+            default:
+                break;
+        }
+    }
+
+    async GetOfferPayload(_id, offer, event) {
+
+        if (offer) {
+            const payload = {
+                event: event,
+                data: { _id, offer }
+            };
+
+            return payload
+        } else {
+            return FormateData({ error: 'No Order Available' });
+        }
     }
 
 }
