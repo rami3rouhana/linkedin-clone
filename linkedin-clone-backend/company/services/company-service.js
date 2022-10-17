@@ -76,7 +76,7 @@ class CompanyService {
 
     async SubscribeEvents(payload) {
 
-        console.log('Triggering.... Worker Events')
+        console.log('Triggering.... Company Events')
 
         payload = JSON.parse(payload);
 

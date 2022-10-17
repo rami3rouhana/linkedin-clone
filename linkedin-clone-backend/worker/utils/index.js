@@ -62,7 +62,6 @@ module.exports.CreateChannel = async () => {
 };
 
 module.exports.PublishMessage = (channel, service, msg) => {
-  console.log(service)
   channel.publish(EXCHANGE_NAME, service, Buffer.from(msg), {
     persistent: true
   });
@@ -79,7 +78,6 @@ module.exports.SubscribeMessage = async (channel, service) => {
   channel.consume(
     q.queue,
     (msg) => {
-      console.log(msg)
       if (msg.content) {
         console.log("the message is:", msg.content.toString());
         service.SubscribeEvents(msg.content.toString());

@@ -40,8 +40,6 @@ class WorkerRepository {
 
         worker.positions.push({ position: pos });
 
-        console.log(worker)
-
         const workerResult = await worker.save();
         return workerResult;
     }
@@ -83,7 +81,9 @@ class WorkerRepository {
 
     async AddOffer(offer, _id) {
 
+        
         const followed = await FollowedModel.find({ companyId: _id });
+        
 
         followed.map(async follow => {
             follow.offers.push({

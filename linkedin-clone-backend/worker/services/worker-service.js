@@ -80,9 +80,9 @@ class WorkerService {
 
     }
 
-    async AddCompanyOffer(offer, _id, offerId) {
+    async AddCompanyOffer(_id, offer) {
 
-        const offerResult = await this.repository.AddOffer(offer, _id, offerId);
+        const offerResult = await this.repository.AddOffer(offer, _id);
 
         return FormateData(offerResult);
 
