@@ -1,11 +1,14 @@
 const CompanyService = require('../services/company-service');
 const UserAuth = require('./middlewares/auth');
+const { WORKER_SERVICE } = require("../config");
+const { SubscribeMessage } = require("../utils");
+const { PublishMessage } = require('../utils');
 
-
-module.exports = (app) => {
+module.exports = (app, channel) => {
 
     const service = new CompanyService();
 
+    SubscribeMessage(channel, service);
 
     app.post('/signup', async (req, res) => {
         const { email, password, name } = req.body;
@@ -32,6 +35,10 @@ module.exports = (app) => {
 
         const { data } = await service.CreateNewOffer(_id, position);
 
+        const payload = await service.GetOfferPayload(_id, data, 'CREATE_OFFER');
+
+        PublishMessage(channel, WORKER_SERVICE, JSON.stringify(payload));
+
         res.json(data);
 
     });
@@ -39,9 +46,16 @@ module.exports = (app) => {
 
     app.delete('/offer/:id', UserAuth, async (req, res) => {
 
-        const { _id } = req.params.id;
+        const _id = req.params.id;
 
-        const { data } = await service.RemoveOffer(_id);
+        const companyId = req.user._id;
+
+
+        const { data } = await service.RemoveOffer(_id, companyId);
+
+        const payload = await service.GetOfferPayload(_id, data, 'REMOVE_OFFER');
+
+        PublishMessage(channel, WORKER_SERVICE, JSON.stringify(payload));
 
         res.json(data);
 
@@ -67,7 +81,7 @@ module.exports = (app) => {
             file,
         }
 
-        const { data } = await service.AddNewApplicant({_id: offerId, applicant});
+        const { data } = await service.AddNewApplicant({ _id: offerId, applicant });
         return res.status(200).json(data);
     });
 }
