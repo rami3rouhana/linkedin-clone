@@ -81,30 +81,41 @@ class WorkerRepository {
         }
     }
 
-    async AddOffer(_id, offer) {
+    async AddOffer(offer, _id) {
 
-        const followed = await FollowedModel.findOne({ _id })
+        const followed = await FollowedModel.find({ companyId: _id });
 
-        if (followed) {
-            followed.offers.push(offer);
+        followed.map(async follow => {
+            follow.offers.push({
+                offerId: offer._id,
+                position: offer.position,
+            });
+            await follow.save();
+        })
 
-            const followedResult = await followed.save();
-            return followedResult;
-        }
-        return {}
+        return { message: "OFFERS REFACTORED" };
     }
 
     async RemoveOffer(_id, offerId) {
 
-        const followed = await FollowedModel.findOne({ _id })
+        const followed = await FollowedModel.find({ companyId: _id })
 
         if (followed) {
-            followed.offers.pull({ _id: offerId });
+            followed.map(async follow => {
+                follow.offers.pull({ offerId });
+                await follow.save();
+            })
 
-            const followedResult = await followed.save();
-            return followedResult;
+            return { message: "OFFERS REFACTORED" };
         }
-        return {}
+    }
+
+    async GetWorker(_id, offerId) {
+
+        const worker = await WorkerModel.findOne({ _id })
+
+        return {worker,offerId};
+
     }
 
 }
