@@ -1,6 +1,7 @@
 const express = require('express');
-const cors  = require('cors');
+const cors = require('cors');
 const { company } = require('./api');
+const { CreateChannel } = require("./utils");
 
 module.exports = async (app) => {
 
@@ -8,6 +9,8 @@ module.exports = async (app) => {
     app.use(cors());
     app.use(express.static(__dirname + '/public'))
 
-    company(app);
-    
+    const channel = await CreateChannel();
+
+    company(app, channel);
+
 }
